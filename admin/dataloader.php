@@ -60,7 +60,13 @@ function recruitly_wordpress_insert_post_type()
 
     $restResponse = json_decode($jsonData);
 
+    //To store new JOB ID's returned by the server.
+	$newJobIdList = array();
+
     foreach ($restResponse->data as $job) {
+
+	    //Collect list of all job ID's - we use this to sync deleted jobs.
+	    $newJobIdList[] = $job->id;
 
 	    //If job does not exist then create one.
 	    if(in_array($job->id,$jobIdList,FALSE)==0){
@@ -156,6 +162,18 @@ function recruitly_wordpress_insert_post_type()
 	    }
 
     }
+
+	//Perform delete operation.
+	//Check if JOB ID stored in local database exists in the list returned by the server.
+	//If not found then JOB is deleted on the server and we remove it from local database too.
+	foreach ($jobIdList as $localJobId) {
+		//If job stored in local database does not exist in remote
+		//then delete the job.
+		if(in_array($localJobId,$newJobIdList,FALSE)==0){
+			$purge = wp_delete_post($postIds[$localJobId]);
+		}
+	}
+
 }
 
 function recruitly_get_taxonomy_id($value, $taxonomy)
