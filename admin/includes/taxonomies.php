@@ -1,6 +1,9 @@
 <?php
-add_action( 'init', 'recruitly_wordpress_setup_taxonomies' );
+add_action('init', 'recruitly_wordpress_setup_taxonomies' );
 add_action('init', 'recruitly_wordpress_county_setup_taxonomies');
+add_action('init', 'recruitly_wordpress_city_setup_taxonomies');
+add_action('init', 'recruitly_wordpress_jobtype_setup_taxonomies');
+
 /**
 * Register taxonomy
 * This taxonomy holds list of all job sectors
@@ -25,6 +28,11 @@ function recruitly_wordpress_setup_taxonomies() {
     ));
 }
 
+
+/**
+ * Register taxonomy
+ * This taxonomy holds list of all county names
+ */
 function recruitly_wordpress_county_setup_taxonomies(){
 	$labels = array(
 		'name'				=>'Countys',
@@ -46,6 +54,10 @@ function recruitly_wordpress_county_setup_taxonomies(){
 }
 
 
+/**
+ * Register taxonomy
+ * This taxonomy holds list of all cities
+ */
 function recruitly_wordpress_city_setup_taxonomies(){
 	$labels = array(
 		'name'				=>'Cities',
@@ -59,6 +71,32 @@ function recruitly_wordpress_city_setup_taxonomies(){
 		'menu name'			=>'Cities'
 	);
 	register_taxonomy( 'jobcity', 'recruitlyjobs', array(
+		'hierarchical' => true,
+		'labels' =>$labels,
+		'query_var' => true,
+		'show_admin_column' => true
+	));
+
+}
+
+
+/**
+ * Register taxonomy
+ * This taxonomy holds list of all job types
+ */
+function recruitly_wordpress_jobtype_setup_taxonomies(){
+	$labels = array(
+		'name'				=>'Job Types',
+		'singular_name'		=>'Job Type ',
+		'search_items'		=>'Search Types ',
+		'all_items'			=>'All Job Types',
+		'edit_items'		=>'Edit Job Type',
+		'update_item'		=>'Update Job Type',
+		'add_new_item'		=>'Add New Job Type',
+		'new_item_name'		=>'New Job Type',
+		'menu name'			=>'Job Types'
+	);
+	register_taxonomy( 'jobtype', 'recruitlyjobs', array(
 		'hierarchical' => true,
 		'labels' =>$labels,
 		'query_var' => true,
