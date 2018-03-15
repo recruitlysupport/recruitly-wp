@@ -3,9 +3,9 @@
 Plugin Name: Recruitly Wordpress Plugin
 Plugin URI: https://recruitly.io
 Description: Recruitly job board integration.
-Version: 1.0.0
-Author: Recruit.cool
-Author URI: https://recruitly.io
+Version: 1.0.1
+Author: Recruitly Support
+Author URI: https://support.recruitly.io
 License: GNU GENERAL PUBLIC LICENSE
 */
 register_activation_hook(__FILE__, 'activate_recruitly_wordpress_plugin');

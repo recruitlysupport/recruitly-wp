@@ -24,7 +24,7 @@ function recruitly_wordpress_truncate_post_type()
 /**
  * Insert all jobs into wordpress custom post type.
  *
- * @see https://api.recruit.cool/swagger-ui.html
+ * @see https://api.recruitly.io
  * @see function recruitly_plugin_setup_post_type()
  *
  */
@@ -34,6 +34,24 @@ function recruitly_wordpress_insert_post_type()
         || get_option('recruitly_apikey') == '' || get_option('recruitly_apiserver') == '') {
         echo '<h2>Please enter API Key to load jobs</h2>';
         return;
+    }
+
+    //Sanitize API Key
+    $apiKey= filter_var(get_option('recruitly_apikey'),FILTER_SANITIZE_STRING);
+
+	//Sanitize API Server
+	$apiServer = filter_var(get_option('recruitly_apiserver'), FILTER_SANITIZE_URL);
+
+	$apiUrl= $apiServer. '/api/job?apiKey='. $apiKey . '&start=0&limit=250';
+
+	$jsonData = file_get_contents($apiUrl);
+
+    $restResponse = json_decode($jsonData);
+
+    //Verify server response and display errors.
+    if(property_exists($restResponse,'reason') && property_exists($restResponse,'message')){
+	    echo '<h2>'.htmlspecialchars($restResponse['message']).'</h2>';
+	    return;
     }
 
 	//Check if this job exists in the custom post type.
@@ -54,13 +72,7 @@ function recruitly_wordpress_insert_post_type()
 		}
 	}
 
-	$apiUrl= get_option('recruitly_apiserver'). '/api/job?apiKey='. get_option('recruitly_apikey') . '&start=0&limit=250';
-
-	$jsonData = file_get_contents($apiUrl);
-
-    $restResponse = json_decode($jsonData);
-
-    //To store new JOB ID's returned by the server.
+	//To store new JOB ID's returned by the server.
 	$newJobIdList = array();
 
     foreach ($restResponse->data as $job) {
@@ -166,11 +178,13 @@ function recruitly_wordpress_insert_post_type()
 	//Perform delete operation.
 	//Check if JOB ID stored in local database exists in the list returned by the server.
 	//If not found then JOB is deleted on the server and we remove it from local database too.
-	foreach ($jobIdList as $localJobId) {
-		//If job stored in local database does not exist in remote
-		//then delete the job.
-		if(in_array($localJobId,$newJobIdList,FALSE)==0){
-			$purge = wp_delete_post($postIds[$localJobId]);
+	if(!empty($jobIdList)) {
+		foreach ( $jobIdList as $localJobId ) {
+			//If job stored in local database does not exist in remote
+			//then delete the job.
+			if ( in_array( $localJobId, $newJobIdList, false ) == 0 ) {
+				$purge = wp_delete_post( $postIds[ $localJobId ] );
+			}
 		}
 	}
 
