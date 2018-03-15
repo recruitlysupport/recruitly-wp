@@ -5,6 +5,12 @@
  */
 function recruitly_wordpress_settings()
 {
+
+	if(!current_user_can('administrator')){
+		print 'Please login as administrator to configure Recruitly!!';
+		exit;
+    }
+
     if( isset($_POST['recruitly_apiserver']) && isset($_POST['recruitly_apikey']))
     {
         //Verify NONCE
