@@ -3,13 +3,14 @@
 Plugin Name: Recruitly Wordpress Plugin
 Plugin URI: https://recruitly.io
 Description: Recruitly job board integration.
-Version: 1.0.1
+Version: 1.0.7
 Author: Recruitly Support
 Author URI: https://support.recruitly.io
 License: GNU GENERAL PUBLIC LICENSE
 */
 register_activation_hook(__FILE__, 'activate_recruitly_wordpress_plugin');
 register_deactivation_hook(__FILE__, 'deactivate_recruitly_wordpress_plugin');
+register_uninstall_hook(__FILE__, 'uninstall_recruitly_wordpress_plugin');
 
 /**
  * Include dependencies
@@ -24,16 +25,26 @@ include( plugin_dir_path( __FILE__ ) . 'admin/dataloader.php');
 
 function activate_recruitly_wordpress_plugin()
 {
-	delete_option('recruitly_apiserver');
-	delete_option('recruitly_apikey');
 	recruitly_wordpress_truncate_post_type();
 }
 
 function deactivate_recruitly_wordpress_plugin()
 {
+	recruitly_wordpress_truncate_post_type();
+	if ( isset( $wp_post_types[ 'recruitlyjobs' ] ) ) {
+		unset( $wp_post_types[ 'recruitlyjobs'  ] );
+	}
+}
+
+function uninstall_recruitly_wordpress_plugin()
+{
 	delete_option('recruitly_apiserver');
 	delete_option('recruitly_apikey');
+
 	recruitly_wordpress_truncate_post_type();
+
+	recruitly_wordpress_delete_taxonomies();
+
 	if ( isset( $wp_post_types[ 'recruitlyjobs' ] ) ) {
 		unset( $wp_post_types[ 'recruitlyjobs'  ] );
 	}
