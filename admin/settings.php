@@ -7,7 +7,7 @@ function recruitly_wordpress_settings()
 {
 
 	if(!current_user_can('administrator')){
-		print 'Please login as administrator to configure Recruitly!!';
+		recruitly_admin_notice('Please login as administrator to configure Recruitly!!','error');
 		exit;
     }
 
@@ -32,12 +32,12 @@ function recruitly_wordpress_settings()
 		        recruitly_wordpress_insert_post_type();
 
 	        } else {
-		        print 'Invalid API Server!!';
+		        recruitly_admin_notice('Invalid API Server!','error');
 		        exit;
             }
 
         }else{
-            print 'Invalid Request!!';
+	        recruitly_admin_notice('Invalid Request!','error');
             exit;
         }
     }

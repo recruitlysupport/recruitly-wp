@@ -35,6 +35,19 @@ function recruitly_wordpress_job_listing_shortcode()
 		'paged' => $paged
 	));
     ?>
+    <div class="recruitly_jobsearch">
+        <form method="get" role="search" class="search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+
+            <!-- PASSING THIS TO TRIGGER THE ADVANCED SEARCH RESULT PAGE FROM functions.php -->
+            <input type="hidden" name="post_type" value="recruitlyjobs">
+
+            <label for="s" class=""><?php _e( 'Keywords: ', 'textdomain' ); ?></label><br>
+            <input type="text" value="" placeholder="<?php _e( 'Type keywords', 'textdomain' ); ?>" name="s" id="name" />
+
+            <input type="submit" value="Search" />
+
+        </form>
+    </div>
     <div class="recruitly_jobs">
         <?php
         if ($wp_query->have_posts()) {
