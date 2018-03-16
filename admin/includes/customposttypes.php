@@ -41,7 +41,11 @@ function recruitly_wordpress_setup_post_type() {
         'has_archive'         => true,
         'exclude_from_search' => false,
         'publicly_queryable'  => true,
-        'capability_type'     => 'page'
+        'capability_type' => 'post',
+        'capabilities' => array(
+	        'create_posts' => 'do_not_allow'
+        ),
+        'map_meta_cap' => false
     );
 
     // Registering your Custom Post Type
