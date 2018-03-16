@@ -36,11 +36,11 @@ function recruitly_wordpress_insert_post_type()
         return;
     }
 
-    //Sanitize API Key
-    $apiKey= filter_var(get_option('recruitly_apikey'),FILTER_SANITIZE_STRING);
+    //Escape API Key
+    $apiKey= esc_html(get_option('recruitly_apikey'));
 
-	//Sanitize API Server
-	$apiServer = filter_var(get_option('recruitly_apiserver'), FILTER_SANITIZE_URL);
+	//Escape API Server Url
+	$apiServer = esc_url(get_option('recruitly_apiserver'));
 
 	$apiUrl= $apiServer. '/api/job?apiKey='. $apiKey . '&start=0&limit=250';
 
