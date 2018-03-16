@@ -36,11 +36,11 @@ function recruitly_wordpress_insert_post_type()
         return;
     }
 
-    //Sanitize API Key
-    $apiKey= filter_var(get_option('recruitly_apikey'),FILTER_SANITIZE_STRING);
+    //Escape API Key
+    $apiKey= esc_html(get_option('recruitly_apikey'));
 
-	//Sanitize API Server
-	$apiServer = filter_var(get_option('recruitly_apiserver'), FILTER_SANITIZE_URL);
+	//Escape API Server Url
+	$apiServer = esc_url(get_option('recruitly_apiserver'));
 
 	$apiUrl= $apiServer. '/api/job?apiKey='. $apiKey . '&start=0&limit=250';
 
@@ -93,6 +93,7 @@ function recruitly_wordpress_insert_post_type()
 	            'post_date' => date('Y-m-d H:i:s', strtotime(str_replace('/', '-', $job->postedOn)))
             ));
 
+		    $job_type_id = recruitly_get_taxonomy_id($job->jobType, 'jobtype');
 		    $sector_id = recruitly_get_taxonomy_id($job->sector, 'jobsector');
 		    $county_id = recruitly_get_taxonomy_id($job->regionName, 'jobcounty');
 		    $city_id = recruitly_get_taxonomy_id($job->cityName, 'jobcity');
@@ -123,6 +124,7 @@ function recruitly_wordpress_insert_post_type()
 		    wp_set_post_terms($post_id, array($sector_id), 'jobsector', false);
 		    wp_set_post_terms($post_id, array($county_id), 'jobcounty', false);
 		    wp_set_post_terms($post_id, array($city_id), 'jobcity', false);
+		    wp_set_post_terms($post_id, array($job_type_id), 'jobtype', false);
 
 
 		//If job exists then update existing job.
@@ -142,6 +144,7 @@ function recruitly_wordpress_insert_post_type()
 		    $sector_id = recruitly_get_taxonomy_id($job->sector, 'jobsector');
 		    $county_id = recruitly_get_taxonomy_id($job->regionName, 'jobcounty');
 		    $city_id   = recruitly_get_taxonomy_id($job->cityName, 'jobcity');
+		    $job_type_id   = recruitly_get_taxonomy_id($job->jobType, 'jobtype');
 
 		    update_post_meta($post_id, 'jobId', $job->id);
 		    update_post_meta($post_id, 'jobStatus', $job->status);
@@ -170,6 +173,7 @@ function recruitly_wordpress_insert_post_type()
 		    wp_set_post_terms($post_id, array($sector_id), 'jobsector', false);
 		    wp_set_post_terms($post_id, array($county_id), 'jobcounty', false);
 		    wp_set_post_terms($post_id, array($city_id), 'jobcity', false);
+		    wp_set_post_terms($post_id, array($job_type_id), 'jobtype', false);
 
 	    }
 

@@ -17,10 +17,10 @@ function recruitly_wordpress_settings()
         if(wp_verify_nonce( $_POST['recruitly_nonce'], 'recruitly_save_action' )){
 
 	        //Sanitize API Key
-	        $apiKey= filter_var($_POST['recruitly_apikey'],FILTER_SANITIZE_STRING);
+	        $apiKey= sanitize_text_field($_POST['recruitly_apikey']);
 
 	        //Sanitize API Server
-	        $apiServer = filter_var($_POST['recruitly_apiserver'], FILTER_SANITIZE_URL);
+	        $apiServer = sanitize_text_field($_POST['recruitly_apiserver']);
 
 	        //Validate and Update Options
 	        if(strpos($apiServer, 'recruitly.io') !== false) {
